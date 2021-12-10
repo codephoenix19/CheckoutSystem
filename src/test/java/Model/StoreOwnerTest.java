@@ -1,8 +1,9 @@
-package Entity;
+package Model;
 
 import DiscountingStrategies.BundleDeal;
 import DiscountingStrategies.Deal;
 import DiscountingStrategies.DiscountDeal;
+import UserControls.StoreOwner;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

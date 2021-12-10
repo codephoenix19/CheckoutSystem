@@ -1,4 +1,4 @@
-package Entity;
+package Model;
 
 import Custom.Tuple3;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class Checkout {
 
     public void calculate(){
         // first apply all deals on the cart items then calculate total price
-        inventory.getDeals().forEach(deal -> deal.apply());
+        inventory.getDeals().forEach(deal -> deal.apply(this.productPriceMapper));
         // logic to iterate over products, get quantities and multiply with price
         Iterator mapIterator = this.productPriceMapper.entrySet().iterator();
         while(mapIterator.hasNext()){
@@ -55,7 +55,7 @@ public class Checkout {
         }
     }
 
-    public void addProduct(long productId, int quantity, boolean isDeal){
+    public void addProductIntoCart(long productId, int quantity, boolean isDeal){
         Tuple3 tuple = checkIfProductExists(productId);
         if(tuple!=null){
             int qty = (int)tuple.getSecond();
@@ -70,24 +70,23 @@ public class Checkout {
                 return;
         }
         this.setProductValuesInMapper(productId, tuple);
-//        this.calculate();
     }
 
-    public void amendQuantity(long productId, int quantity){
+    public void amendQuantityOfCartItem(long productId, int quantity){
         Tuple3 tuple = checkIfProductExists(productId);
         if(tuple == null) {
-            this.addProduct(productId, quantity, false);
+            this.addProductIntoCart(productId, quantity, false);
 //            throw new RuntimeException("No such product exists");
         }
         if(quantity == 0) {
-            this.removeProduct(productId);
+            this.removeProductFromCart(productId);
             return;
         }
         tuple.setSecond(quantity);
         this.setProductValuesInMapper(productId, tuple);
     }
 
-    public void amendPrice(long productId, Double price){
+    public void amendPriceOfCartItem(long productId, Double price){
         if(this.productPriceMapper.containsKey(productId)){
             Tuple3 tuple = this.productPriceMapper.get(productId);
             tuple.setThird(price);
@@ -95,7 +94,7 @@ public class Checkout {
         }
     }
 
-    public void removeProduct(long productId){
+    public void removeProductFromCart(long productId){
         Tuple3 tuple = checkIfProductExists(productId);
         if(tuple == null)
             throw new RuntimeException("You cannot remove a product which is not present in the cart");
@@ -110,7 +109,6 @@ public class Checkout {
     }
 
     private void setProductValuesInMapper(long productId, Tuple3 tuple){
-//        if(productPriceMapper.containsKey(productId))
             productPriceMapper.put(productId, tuple);
     }
 
