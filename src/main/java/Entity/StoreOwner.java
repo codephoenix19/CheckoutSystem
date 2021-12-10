@@ -27,14 +27,20 @@ public class StoreOwner {
         return 1;
     }
 
-    public void amendPrice(Long productId, Double price){
+    public void amendPriceOfProduct(Long productId, Double updatedPrice){
         // update product price in inventory list
-        cart.amendPrice(productId, price);
+        if(inventory.checkIfProductIsInInventory(productId)) {
+            inventory.getProduct(productId).setPrice(updatedPrice);
+            cart.amendPrice(productId, updatedPrice);
+        }
     }
 
     public void removeProduct(Long productId){
-        // remove product from enum list
-        cart.removeProduct(productId);
+        // remove product from inventory list
+        if(inventory.checkIfProductIsInInventory(productId)) {
+            inventory.removeProduct(productId);
+            cart.removeProduct(productId);
+        }
     }
 
     public void createDiscountDeal(Long productId, int quantity, int percentage){
