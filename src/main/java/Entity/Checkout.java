@@ -13,6 +13,9 @@ public class Checkout {
 
     private double totalPrice;
 
+    // To maintain Map(product id --> name, quantity, price)
+    private Map<Long, Tuple3<String, Integer, Double>> productPriceMapper;
+
     private Inventory inventory = Inventory.getInstance();
 
     public Map<Long, Tuple3<String, Integer, Double>> getProductPriceMapper() {
@@ -22,9 +25,6 @@ public class Checkout {
     public void setProductPriceMapper(Map<Long, Tuple3<String, Integer, Double>> productPriceMapper) {
         this.productPriceMapper = productPriceMapper;
     }
-
-    // To maintain Map(product id --> name, quantity, price)
-    private Map<Long, Tuple3<String, Integer, Double>> productPriceMapper;
 
     private Checkout(){
         if(INSTANCE != null)
@@ -79,9 +79,11 @@ public class Checkout {
             this.addProduct(productId, quantity, false);
 //            throw new RuntimeException("No such product exists");
         }
-        if(quantity == 0)
+        if(quantity == 0) {
             this.removeProduct(productId);
-        tuple.setSecond(tuple.getSecond());
+            return;
+        }
+        tuple.setSecond(quantity);
         this.setProductValuesInMapper(productId, tuple);
     }
 
@@ -118,5 +120,13 @@ public class Checkout {
             Map.Entry<Long, Tuple3> entry = (Map.Entry<Long, Tuple3>) mapIterator.next();
             System.out.println("Product Id : " + entry.getKey() + " With values as : " + entry.getValue());
         }
+    }
+
+    public void emptyCart(){
+        this.productPriceMapper = new HashMap<Long, Tuple3<String, Integer, Double>>();
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
     }
 }

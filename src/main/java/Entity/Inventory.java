@@ -45,8 +45,19 @@ public class Inventory {
     public void addProduct(Product product) throws RuntimeException{
         // If product exists in inventory throw an exception
         if(checkIfProductIsInInventory(product.getId()))
-            throw new RuntimeException("Blah blah");
+            throw new RuntimeException("Product already exists in the inventory!");
         products.add(product);
+    }
+
+    public void modifyProductPrice(Long productId, Double updatedPrice) throws RuntimeException{
+        if(!checkIfProductIsInInventory(productId))
+            throw new RuntimeException("Product is not present in the inventory, try creating a new product");
+        for(Product product : products){
+            if(product.getId().equals(productId)) {
+                product.setPrice(updatedPrice);
+                break;
+            }
+        }
     }
 
     public void removeProduct(Long productId){
@@ -94,6 +105,10 @@ public class Inventory {
     public void addBundleDealToDeals(Deal deal){
 //        LOGGER.info("Adding bundle deal to list of deals " + deal.toString());
         this.deals.add(deal);
+    }
+
+    public void clearProducts(){
+        this.products = new ArrayList<>();
     }
 
 }
