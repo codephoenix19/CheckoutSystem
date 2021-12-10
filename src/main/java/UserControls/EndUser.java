@@ -1,4 +1,6 @@
-package Entity;
+package UserControls;
+
+import Model.Checkout;
 
 public class EndUser {
     /*
@@ -11,15 +13,15 @@ public class EndUser {
     private Checkout CART = Checkout.getInstance();
 
     public void addItem(Long productId){
-        CART.addProduct(productId, 1, false);
+        CART.addProductIntoCart(productId, 1, false);
     }
 
     public void changeQuantity(Long productId, int quantity){
-        CART.amendQuantity(productId, quantity);
+        CART.amendQuantityOfCartItem(productId, quantity);
     }
 
     public void removeProduct(Long productId){
-        CART.removeProduct(productId);
+        CART.removeProductFromCart(productId);
     }
 
     public void calculate(){

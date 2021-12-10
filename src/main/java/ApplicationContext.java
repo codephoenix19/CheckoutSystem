@@ -1,4 +1,6 @@
-import Entity.*;
+import Model.*;
+import UserControls.EndUser;
+import UserControls.StoreOwner;
 
 import java.util.List;
 import java.util.Scanner;

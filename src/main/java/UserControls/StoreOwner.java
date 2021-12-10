@@ -1,8 +1,11 @@
-package Entity;
+package UserControls;
 
 import DiscountingStrategies.BundleDeal;
 import DiscountingStrategies.Deal;
 import DiscountingStrategies.DiscountDeal;
+import Model.Checkout;
+import Model.Inventory;
+import Model.Product;
 
 public class StoreOwner {
    /*
@@ -12,11 +15,11 @@ public class StoreOwner {
     - Apply discount deals for products (eg buy 1 get 50% off the second)
     - Apply bundle deals (eg buy 1 laptop, get a mouse for free)
     */
-    private Checkout cart = Checkout.getInstance();
+
     private Inventory inventory = Inventory.getInstance();
 
     public int createProduct(Long productId, String name, String description, Double price) {
-        // add new products list into inventory list for now - later into products database
+        // Add new products list into inventory list for now - later into products database
         try {
             Product product = new Product(productId, name, description, price);
             inventory.addProduct(product);
@@ -28,18 +31,20 @@ public class StoreOwner {
     }
 
     public void amendPriceOfProduct(Long productId, Double updatedPrice){
-        // update product price in inventory list
+        // Update product price in inventory list
         if(inventory.checkIfProductIsInInventory(productId)) {
             inventory.getProduct(productId).setPrice(updatedPrice);
-            cart.amendPrice(productId, updatedPrice);
+            // logic to use pub-sub pattern to alert carts for other users that a product price has been changed
+            // cart.amendPriceOfCartItem(productId, updatedPrice);
         }
     }
 
     public void removeProduct(Long productId){
-        // remove product from inventory list
+        // Remove product from inventory list
         if(inventory.checkIfProductIsInInventory(productId)) {
             inventory.removeProduct(productId);
-            cart.removeProduct(productId);
+            // logic to use pub-sub pattern to alert carts for other users that a product has been removed
+            // cart.removeProductFromCart(productId);
         }
     }
 

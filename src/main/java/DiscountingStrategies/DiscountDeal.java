@@ -1,7 +1,10 @@
 package DiscountingStrategies;
 
 import Custom.Tuple3;
-import Entity.Checkout;
+import Model.Inventory;
+import Model.Product;
+
+import java.util.Map;
 
 public class DiscountDeal implements Deal {
     /*
@@ -10,7 +13,7 @@ public class DiscountDeal implements Deal {
     private final Long productId;
     private final Integer quantity;
     private final Integer discountPercentage;
-    private Checkout CART = Checkout.getInstance();
+    private Inventory inventory = Inventory.getInstance();
 
     public DiscountDeal(Long productId, Integer quantity, Integer discountPercentage) {
         this.productId = productId;
@@ -19,15 +22,19 @@ public class DiscountDeal implements Deal {
     }
 
     @Override
-    public void apply() {
-        // modify logic to amend price of product Id
-        if(CART.getProductPriceMapper().containsKey(productId)){
-            Tuple3 tuple = CART.getProductPriceMapper().get(productId);
+    public void apply(Map<Long, Tuple3<String, Integer, Double>> cart) {
+        // logic is to get product details from inventory
+        // Then check if product exists in cart and sufficient quantity is present
+        // If so, apply discount percentage on the total price
+        if(cart.containsKey(productId)){
+            Tuple3 tuple = cart.get(productId);
             int qty = (Integer) tuple.getSecond();
-            if(qty >= quantity && qty%quantity == 0){
-                Double price = (Double) tuple.getThird();
+            if(qty >= quantity){
+                Product productInfo = inventory.getProduct(productId);
+                Double price = productInfo.getPrice();
                 Double updatedPrice = (price - price*discountPercentage/100);
-                CART.amendPrice(productId, updatedPrice);
+                tuple.setThird(updatedPrice);
+                cart.put(productId, tuple);
             }
         }
     }
